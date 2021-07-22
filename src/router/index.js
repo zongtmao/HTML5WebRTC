@@ -6,8 +6,28 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "Microphone",
-    component: () => import("../views/microphone/UseMicrophone.vue"),
+    name: "Layout",
+    component: () => import("@/components/Layout.vue"),
+  },
+  {
+    path: "/microphone",
+    name: "microphone",
+    component: () => import("@/views/microphone/UseMicrophone.vue"),
+  },
+  {
+    path: "/camera",
+    name: "camera",
+    component: () => import("@/views/camera/UseCamera.vue"),
+  },
+  {
+    path: "/audio",
+    name: "audio",
+    component: () => import("@/views/record-audio/RecordAudio.vue"),
+  },
+  {
+    path: "/video",
+    name: "video",
+    component: () => import("@/views/record-video/RecordVideo.vue"),
   },
 ];
 
