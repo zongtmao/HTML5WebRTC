@@ -19,6 +19,7 @@
           <el-menu-item-group>
             <el-menu-item index="audio">Record Audio</el-menu-item>
             <el-menu-item index="video">Record Video</el-menu-item>
+            <el-menu-item index="screen">Record Screen</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
       </el-menu>

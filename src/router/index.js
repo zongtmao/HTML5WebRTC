@@ -29,6 +29,11 @@ const routes = [
     name: "video",
     component: () => import("@/views/record-video/RecordVideo.vue"),
   },
+  {
+    path: "/screen",
+    name: "screen",
+    component: () => import("@/views/record-screen/RecordScreen.vue"),
+  },
 ];
 
 const router = new VueRouter({
