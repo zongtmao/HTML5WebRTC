@@ -42,13 +42,6 @@ class IndexedDBProxy extends Proxy {
       .modify({ video_name });
   }
 
-  async reloadRecordedVideos() {
-    this.sendNotification(
-      Constants.Commands.RECORDED_VIDEOS_RELOADED,
-      await this.readRecordedVideoLib()
-    );
-  }
-
   // 删除indexDB里视频
   async deleteVideo(video_id) {
     await this.data.db.recorded_videos
@@ -57,8 +50,8 @@ class IndexedDBProxy extends Proxy {
       .delete();
   }
 
+  // 录制视频导出
   async exportVideo(video_id, mode = 'download') {
-    let pd = Dialog.showLoading('正在导出...');
     let filterResult = await this.data.db.recorded_videos.filter(
       (item) => item.video_id == video_id
     );
@@ -72,7 +65,6 @@ class IndexedDBProxy extends Proxy {
       blobs.push(r.data);
     }
     let blob = new Blob(blobs, { type: 'video/webm' });
-    pd.modal('hide');
 
     let end = records[blobs.length - 1],
       start = records[0];
@@ -87,18 +79,24 @@ class IndexedDBProxy extends Proxy {
     }
 
     if (mode == 'download') {
+      // 通过原生a标签下载
       let url = window.URL.createObjectURL(blob);
       let filename =
         (video_name || DateHelper.getReadableTimestamp()) + '.webm';
-      let a = $(
-        `<a style='display: none;' href="${url}" target="_blank" download="${filename}">${filename}</a>`
-      );
-      $('body').append(a);
-      a[0].click();
+      let aDom = document.createElement('a');
+      aDom.innerHTML = filename;
+      aDom.setAttribute('style', 'display: none;');
+      aDom.setAttribute('href', url);
+      aDom.setAttribute('target', '_blank');
+      aDom.setAttribute('download', filename);
+
+      document.querySelector('body').append(aDom);
+      aDom.click();
       window.URL.revokeObjectURL(url);
-      a.remove();
+      aDom.remove();
     } else if (mode == 'preview') {
-      VideoPreviewDialog.show(blob, video_name || video_id);
+      // 抛出视频 blob数据
+      return blob;
     }
   }
 }

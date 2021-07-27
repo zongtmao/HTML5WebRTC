@@ -26,15 +26,15 @@
       <el-button v-else class="record" @click="stopRecord" type="danger">Stop Record</el-button>
     </div>
 
-    <RecordVideoList />
+    <RecordVideoList :needRequest="needGetDBVideos" />
   </div>
 </template>
 
 <script>
-  import ViewEvents from './libs/ViewEvents.js';
   import DateHelper from './indexDB/dateHelper.js';
   import IndexedDBProxy from './indexDB/indexDBProxy.js';
-  import RecordVideoList from './components/RecordVideoList.vue'
+  import RecordVideoList from './components/RecordVideoList.vue';
+  import Constants from './indexDB/constants.js';
 
   export default {
     name: 'RecordScreen',
@@ -49,7 +49,8 @@
         devices: [],
         recording: false,
         mediaRecord: null,
-        mediaStream: null
+        mediaStream: null,
+        needGetDBVideos: false
       }
     },
     mounted () {
@@ -87,6 +88,7 @@
       // 开始录制
       async startRecord() {
         try {
+          this.needGetDBVideos = false;
           let stream = new MediaStream();
 
           if (this.includeAudio) {
@@ -109,7 +111,7 @@
           this.mediaRecord.currentVideoId = DateHelper.getReadableTimestamp() + "_" + Date.now();
           this.mediaRecord.ondataavailable = this.ondataavailableHandler.bind(this);
           this.mediaRecord.onstop = this.recorderStopedHandler.bind(this);
-          this.mediaRecord.start(3000);
+          this.mediaRecord.start(Constants.MediaRecorder.TIME_SPLIT);
           this.recording = true;
           console.log(stream);
         } catch (err) {
@@ -120,7 +122,7 @@
       // 暂停录制
       stopRecord() {
         this.mediaRecord.stop();
-        this.$emit(ViewEvents.REQUEST_TO_STOP_RECORD);
+        this.needGetDBVideos = true;
         this.recording = false;
       },
 

@@ -14,7 +14,7 @@ export default class WebmFile extends WebmContainer {
       data = source;
     } else {
       throw new Error(
-        'Arguments error, source must be Uint8Array or ArrayBuffer'
+        '参数错误，来源必须是 Uint8Array 或 ArrayBuffer'
       );
     }
     this.setSource(data);
@@ -23,19 +23,18 @@ export default class WebmFile extends WebmContainer {
   fixDuration(duration) {
     var segmentSection = this.getSectionById(0x8538067);
     if (!segmentSection) {
-      console.error('[fix-webm-duration] Segment section is missing');
       return false;
     }
 
     var infoSection = segmentSection.getSectionById(0x549a966);
     if (!infoSection) {
-      console.error('[fix-webm-duration] Info section is missing');
+      console.error('[fix-webm-duration] 缺少信息部分');
       return false;
     }
 
     var timeScaleSection = infoSection.getSectionById(0xad7b1);
     if (!timeScaleSection) {
-      console.error('[fix-webm-duration] TimecodeScale section is missing');
+      console.error('[fix-webm-duration] 缺少时间码刻度部分');
       return false;
     }
 
@@ -44,14 +43,12 @@ export default class WebmFile extends WebmContainer {
       if (durationSection.getValue() <= 0) {
         durationSection.setValue(duration);
         console.debug(
-          '[fix-webm-duration] Duration section is present, but the value is empty, fixed'
+          '[fix-webm-duration] Duration 部分存在，但值为空'
         );
       } else {
-        console.debug('[fix-webm-duration] Duration section is present');
         return false;
       }
     } else {
-      // append Duration section
       durationSection = new WebmFloat('Duration', 'Float');
       durationSection.setValue(duration);
       infoSection.data.push({
@@ -59,10 +56,10 @@ export default class WebmFile extends WebmContainer {
         data: durationSection,
       });
 
-      console.debug('[fix-webm-duration] Duration section is missing, fixed');
+      console.debug('[fix-webm-duration] 缺少Duration');
     }
 
-    // set default time scale to 1 millisecond (1000000 nanoseconds)
+    // 将默认时间刻度设置为 1 毫秒（1000000 纳秒）
     timeScaleSection.setValue(1000000);
     infoSection.updateByData();
     segmentSection.updateByData();

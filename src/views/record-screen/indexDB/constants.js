@@ -1,22 +1,4 @@
 const Constants = {
-    Commands: {
-      START_UP: 'StartUp',
-      MOUNT_VUE_APP: 'mountVueApp',
-      RECORD_SCREEN: 'recordScreen',
-      RECORD_SCREEN_STARTED: 'recordScreenStarted',
-      RECORD_SCREEN_STOPPED: 'recordScreenStopped',
-      RECORDED_VIDEOS_RELOADED: 'recordedVideosReloaded',
-      RENAME_VIDEO: 'renameVideo',
-      RELOAD_VIDEOS: 'reloadVideos',
-      EXPORT_OR_PREVIEW_VIDEO: 'ExportOrPreviewVideo',
-    },
-    
-    MediatorNames: {
-      APP_MEDIATOR: 'AppMediator',
-      MAIN_VIEW_MEDIATOR: 'MainViewMediator',
-      RECORDED_VIDEO_LIST_MEDIATOR: 'RecordedVideoListMediator',
-    },
-  
     ProxyNames: {
       INDEXEDDB_PROXY: 'IndexedDBProxy',
     },

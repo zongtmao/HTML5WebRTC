@@ -1,5 +1,5 @@
 import WebmBase from './webmBase';
-import Constants from '../constants.js';
+import Constants from './webmConstant.js';
 import WebmFloat from './webmFloat';
 import WebmUint from './webmUnit';
 
@@ -17,7 +17,6 @@ export default class WebmContainer extends WebmBase {
     let bytes = 8 - firstByte.toString(2).length;
     let value = firstByte - (1 << (7 - bytes));
     for (let i = 0; i < bytes; i++) {
-      // don't use bit operators to support x86
       value *= 256;
       value += this.readByte();
     }
@@ -26,11 +25,10 @@ export default class WebmContainer extends WebmBase {
 
   updateBySource() {
     this.data = [];
-
     for (this.offset = 0; this.offset < this.source.length; this.offset = end) {
       let id = this.readUint();
       let len = this.readUint();
-      let end = Math.min(this.offset + len, this.source.length);
+      var end = Math.min(this.offset + len, this.source.length);
       let data = this.source.slice(this.offset, end);
 
       let info = Constants.SECTIONS[id] || { name: 'Unknown', type: 'Unknown' };
@@ -58,7 +56,7 @@ export default class WebmContainer extends WebmBase {
 
   writeUint(x, draft) {
     for (
-      let bytes = 1, flag = 0x80;
+      var bytes = 1, flag = 0x80;
       x >= flag && bytes < 8;
       bytes++, flag *= 0x80
     ) {
@@ -68,7 +66,6 @@ export default class WebmContainer extends WebmBase {
     if (!draft) {
       let value = flag + x;
       for (let i = bytes - 1; i >= 0; i--) {
-        // don't use bit operators to support x86
         let c = value % 256;
         this.source[this.offset + i] = c;
         value = (value - c) / 256;
@@ -95,10 +92,9 @@ export default class WebmContainer extends WebmBase {
   }
 
   updateByData() {
-    // run without accessing this.source to determine total length - need to know it to create Uint8Array
     let length = this.writeSections('draft');
     this.source = new Uint8Array(length);
-    // now really write data
+    // 开始写数据
     this.writeSections();
   }
 
